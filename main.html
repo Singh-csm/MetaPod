@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <!-- PWA manifest -->
+    <link href="manifest.json" rel="manifest">
+    <!-- Add to home screen for Safari on iOS -->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="Personal Assistant " name="apple-mobile-web-app-title">
+    <link href="img/icons/vr-glasses_512.png" rel="apple-touch-icon">
+
+    <link rel="stylesheet" href="main.css">
+    <title>Flipkart Grid 4.0</title>
+
+    <meta name="description" content="Metaverse Shopping Experience">
+
+    <!-- lib files-->
+
+    <script src="js/libs/three.min.js"></script>
+    <script src="js/libs/VRControls.min.js"></script>
+    <script src="js/libs/aframe.min.js"></script>
+    <script src="js/libs/aframe-extras.js"></script>
+    <script src="js/libs/aframe-physics.min.js"></script>
+
+    <script>
+        (function() {
+
+            var myVr = {};
+
+
+            // for playing walking sound
+            AFRAME.registerComponent('position-listener', {
+
+                tick() {
+                    debugger;
+                    const newValue = this.el.getAttribute('position');
+                    const stringCoords = AFRAME.utils.coordinates.stringify(newValue);
+
+                    if (this.lastValue !== stringCoords) {
+                        this.el.emit('positionChanged', newValue);
+                        this.lastValue = stringCoords;
+                        var entity = document.querySelector('[sound]');
+                        document.getElementById("river").play();
+                    } else {
+                        document.getElementById("river").pause();
+
+                    }
+                },
+            });
+
+            // for getting component ready 
+            AFRAME.registerComponent('log', {
+                schema: {
+                    type: 'string'
+                },
+                init: function() {
+                    var stringToLog = this.data;
+                    console.log(stringToLog);
+                    myVr.audioElement = document.getElementById("song");
+                }
+            });
+
+            function playsong(songUrl, panelID) {
+                myVr.audioElement.src = songUrl;
+                myVr.audioElement.play();
+            }
+
+            function stopSong(panelID) {
+                myVr.audioElement.pause();
+            }
+
+            function talkBack(str) {
+                var msg = new SpeechSynthesisUtterance();
+                msg.text = str;
+                msg.volume = 1;
+                msg.rate = 1;
+                msg.pitch = 1;
+                var voiceSelect = "Google UK English Female"; //  Google हिन्दी
+                msg.voice = speechSynthesis.getVoices().filter(function(voice) {
+                    return voice.name == voiceSelect;
+                })[0];
+                window.speechSynthesis.speak(msg);
+            }
+
+            // speech api for buying notification
+            function buyAlbum(panelID) {
+                // speak command
+                talkBack("Selected Item has been added to the cart successfully ! Thank You");
+                if (panelID) {
+                    window.setTimeout(function() {
+                        document.querySelector(panelID).setAttribute("visible", false);
+                    }, 500)
+                }
+            }
+
+            myVr.playsong = playsong;
+            myVr.stopSong = stopSong;
+            myVr.buyAlbum = buyAlbum;
+            window.myVr = myVr;
+
+        })();
+    </script>
+</head>
+
+<body>
+
+    <img id="loader" src="img/loader.gif" class="vr-loader" alt="loading-icon" />
+
+    <a-scene log="Hello, Scene Loaded!" fog="color:#272727;far:98.14;near:13.32;density:0" inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
+
+        <!-- lights-->
+
+        <a-entity light="type:ambient;color:#999999;intensity:0.5" position="0 0 0"></a-entity>
+
+        <a-entity light="type:spot;intensity:1;distance:50;decay:1;color:#ff0000;angle:90;castShadow:true" position="-1.44 4.16 -10.21"></a-entity>
+
+        <a-entity light="type:point;intensity:2.25;distance:8;decay:0.5;color:#edfff1;angle:20;castShadow:true" position="7.9 7.17 -3.86"></a-entity>
+
+
+        <a-entity id="fur-light" light="type:spot;intensity:1.5;distance:10;decay:0.5;color:#ffffff;angle:180;castShadow:true" position="9 7 20">
+        </a-entity>
+
+        <a-entity light="type:spot;intensity:1.5;distance:8;decay:0.5;color:#e6e6e6;angle:180;castShadow:true" position="-3.62 4.29 18.91"></a-entity>
+
+        <!-- pathway lights-->
+        <a-entity light="type:spot;intensity:1.5;distance:7.5;decay:0.5;color:#ffffff;angle:180;castShadow:true" position="-1.8 6 9.38"></a-entity>
+
+        <a-entity light="type:point;intensity:1.75;distance:8.5;decay:0.5;color:#ffffff;angle:180;castShadow:true" position="-1.72 6.08 -1"></a-entity>
+
+        <!-- sports light-->
+        <a-entity id="sports-light" light="type:spot;intensity:2;distance:8;decay:0.5;color:#cccccc;angle:20;castShadow:true" position="-10.38 3.96 -4.76" id="sports-light"></a-entity>
+
+        <a-entity light="type:point;intensity:1.5;distance:12;decay:0.5;color:#0b57df;angle:180;castShadow:true" position="-13 2.81 -2.85"></a-entity>
+
+        <!--music light-->
+        <a-entity light="type:point;intensity:2;distance:8;decay:0.5;color:#fc7dff;angle:90;castShadow:true" position="-11.09 3.52 7.58"></a-entity>
+
+        <!--elec light-->
+        <!----<a-entity id="electronics-light" rotation="-20 30 20" light="type:spot;intensity:2;distance:5;decay:0.25;color:#f5feb6;angle:50;castShadow:true" position="5.79 3.5 6.26"></a-entity>
+-->
+        <a-entity light="type:point;intensity:2;distance:5;decay:0.25;color:#ffffff;angle:0;castShadow:true" position="4.89 4.74 10.02" id="el2"></a-entity>
+        <a-entity light="type:point;intensity:2;distance:5;decay:0.25;color:#ffffff;angle:0;castShadow:true" position="5.28 4.71 4.92" id="el2-2"></a-entity>
+
+        <!-- Splash Screen -->
+        <div class="splash">
+            <div class="splash__card">
+                <!-- <h1>The Metaverse Shopping Experience </h1>
+                <p></p>
+                <h2>Flipkart Grid 4.O</h2>
+                <br /> -->
+                <button class="splash__button" id="start">Visit Mart</button>
+            </div>
+        </div>
+
+        <!-- Load Assets -->
+        <a-assets>
+            <!-- global -->
+            <img id="floor" src="img/floor.jpg">
+            <img id="wall" src="img/images-2.jpeg">
+
+
+            <img id="room-sign-1" src="img/other/room-sign-1.png">
+            <img id="room-sign-2" src="img/other/room-sign-2.png">
+            <img id="room-sign-4" src="img/room4/room-sign-4.png">
+            <img id="theatre-sign" src="img/other/theatre-logo.jpg">
+            <img id="movie-poster" src="img/other/movie-poster.jpg">
+
+            <!-- team -->
+            <img id="team-poster" src="img/team/poster.png">
+            <img id="team-arcadio" src="img/team/arcadio.png">
+            <img id="team-dan" src="img/team/dan.png">
+            <img id="team-dustin" src="img/team/singer1.jpg">
+            <img id="team-judy" src="img/team/singer2.jpg">
+            <img id="team-maceij" src="img/team/map.jpg">
+            <img id="team-porfirio" src="img/team/porfirio.png">
+
+            <!--  Room 1-->
+            <img id="room1-example" src="img/room1/example.png">
+            <img id="room1-s" src="img/room1/room1-s.png">
+            <img id="room1-sofa" src="img/room1/sofa-r1.jpg">
+            <img id="room1-dine" src="img/room1/dining_sets.jpg">
+            <img id="room1-drawer" src="img/room1/drawers.jpg">
+
+            <!-- Example Room 2-->
+            <img id="room2-final1" src="img/room2/final-1.png">
+            <img id="room2-final2" src="img/room2/final-2.png">
+            <img id="gullyboy" src="img/room2/gullyboy1.png">
+            <img id="room2-final4" src="img/room2/final-4.png">
+            <img id="room2-mock1" src="img/room2/mock-1.png">
+            <img id="room2-mock2" src="img/room2/mock-2.png">
+            <img id="room2-mock3" src="img/room2/mock-3.png">
+            <img id="room2-mock4" src="img/room2/mock-4.png">
+            <img id="room2-wire1" src="img/room2/wire-1.png">
+            <img id="room2-wire2" src="img/room2/wire-2.png">
+            <img id="room2-wire3" src="/img/room2/wire-3.png">
+            <img id="room2-wire4" src="img/room2/wire-4.png">
+            <img id="room2-final-sign" src="img/room2/final-sign.png">
+            <img id="room2-mock-sign" src="img/room2/mock-sign.png">
+            <img id="room2-wire-sign" src="img/room2/wire-sign.png">
+
+            <!--  Room 3 -->
+            <img id="room3-s1" src="img/room3/screen1.jpg">
+            <img id="room3-s2" src="img/room3/screen2.jpg">
+            <img id="room3-s3" src="img/room3/screen3.jpg">
+            <img id="room3-s4" src="img/room3/screen4.jpg">
+            <img id="room3-sign" src="img/room3/elec-store-sign.jpg">
+            <img id="room3-sign2" src="img/room3/elec-sign-2.jpg">
+
+            <!--  Room 4-->
+            <img id="room4-map" src="img/room4/Sports-Banner.jpg" />
+            <img id="room4-photo1" src="img/room4/map.jpg">
+            <img id="room4-photo2" src="img/room4/map.png">
+            <img id="room4-photo3" src="img/room4/photo3.png">
+            <img id="room4-photo4" src="img/room4/photo4.png">
+            <img id="room4-photo5" src="img/room4/photo5.png">
+            <img id="room4-photo6" src="img/room4/photo6.png">
+            <img id="room4-sign-photos" src="img/room4/sign-photos.png">
+            <img id="room4-sign-roadshow" src="img/room4/sign-roadshow.png">
+
+            <!--  Room 5 -->
+            <img id="room5-sign-back" src="img/room5/room5_sign1.jpg">
+            <img id="room5-sign-side" src="img/room5/room5_sign2.jpg">
+            <img id="room5-sign-side2" src="img/room5/room5_sign3.jpg">
+            <img id="room5-landing" src="img/room5/room5-iwc-img.jpg">
+            <img id="room5-rust" src="img/room5/rust.png">
+            <img id="room5-speech" src="img/room5/speech.png">
+            <img id="room5-vr" src="img/room5/vr.png">
+            <img id="room5-wa" src="img/room5/wa.png">
+
+            <!-- Example Theater 6-->
+            <video id="theaterVideo" autoplay loop="true" webkit-playsinline playsinline src="vid/movie.mp4"></video>
+            <img id="theater-curtains" src="img/theater/curtains.png">
+            <a-asset-item id="couch-obj" src="img/theater/couch/model.obj"></a-asset-item>
+            <a-asset-item id="couch-mtl" src="img/theater/couch/materials.mtl"></a-asset-item>
+            <a-asset-item id="avatar" src="./Avatar/scene.gltf"></a-asset-item>
+        </a-assets>
+
+
+        <a-assets>
+            <!-- walking sound -->
+            <audio id="river" src="./sound/walk.mp3"></audio>
+        </a-assets>
+        <a-assets>
+            <!-- audio songs-->
+            <audio id="song" src=""></audio>
+        </a-assets>
+
+
+
+
+        <!-- movement controls-->
+        <a-entity id="rig" movement-controls position-listener listener position="0 0 0">
+            <a-entity id="player" camera="user-height: 2" look-controls="pointerLockEnabled: true" position="0 9 0">
+                <a-entity cursor="fuse: true;" position="0 0 -3" geometry="primitive: ring" material="color: black; shader: flat">
+                    <a-animation begin="click" easing="ease-in" attribute="scale" dur="150" fill="forwards" from="0.1 0.1 0.1" to="0.15 0.15 0.15"></a-animation>
+                    <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500" fill="backwards" from="0.15 0.15 0.15" to="0.1 0.1 0.1"></a-animation>
+                </a-entity>
+                <!-- <a-entity gltf-model="#avatar"></a-entity> -->
+            </a-entity>
+        </a-entity>
+        </a-entity>
+
+
+
+        <!-- Start Room (spawn) -->
+        <a-entity position="-1.5 1.5 19.5" rotation="0 0 0">
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="1 1.5 -4.4" src="#team-poster" height="5" width="5"></a-image>
+            </a-entity>
+        </a-entity>
+
+        <!-- hallway -->
+        <!-- right wall -->
+        <a-image position="-.1 3 3" rotation="0 -90 0" src="#team-dan" height="3" width="3"></a-image>
+        <a-image position="-.1 3 12" rotation="0 -90 0" src="#team-arcadio" height="3" width="3"></a-image>
+        <a-image position="-.1 3 -9" rotation="0 -90 0" src="#team-judy" height="3" width="3"></a-image>
+        <!-- left wall -->
+        <a-image position="-2.9 3 12" rotation="0 90 0" src="#team-porfirio" height="3" width="3"></a-image>
+        <a-image position="-2.9 3 -9" rotation="0 90 0" src="#team-dustin" height="3" width="3"></a-image>
+        <a-image position="-2.9 3 3" rotation="0 90 0" src="#team-maceij" height="3" width="3"></a-image>
+
+        <!--  Room 1 (Immediate right) -->
+        <a-entity position="10.5 1.5 19.5" rotation="0 -90 0">
+            <!-- Room Sign -->
+            <a-image position="-1.45 1 6.02" rotation="0 90 0" src="#room1-s" height="1.5" width="3"></a-image>
+
+            <!-- Back wall -->
+            <a-image position="0 2.5 -4.4" src="#room1-sofa" height="5" width="10"></a-image>
+
+            <!--right wall -->
+            <a-entity rotation="0 -90 0">
+                <a-image position="0 2.5 -4.4" src="#room1-dine" height="5" width="10"></a-image>
+            </a-entity>
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="0 2.5 -4.4" src="#room1-drawer" height="5" width="10"></a-image>
+            </a-entity>
+            <!-- 3d models -->
+            <a-entity obj-model="obj: #table-obj; mtl: #table-mtl" position="0 -1 1" rotation="0 0 0" scale=".01 .01 .01">
+            </a-entity>
+            <a-asset-item id="table-obj" src="img/3dmodels/table/table.obj"></a-asset-item>
+            <a-asset-item id="table-mtl" src="img/3dmodels/table/table.mtl"></a-asset-item>
+
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="0 0 1" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 5,000)"></a-text>
+
+            </a-plane>
+
+            <a-entity obj-model="obj: #sofa-obj; mtl: #sofa-mtl" position="-1.5 -1 -1" rotation="0 0 0" scale="1 1 1">
+            </a-entity>
+            <a-asset-item id="sofa-obj" src="img/3dmodels/sofa/sofa.obj"></a-asset-item>
+            <a-asset-item id="sofa-mtl" src="img/3dmodels/sofa/sofa.mtl"></a-asset-item>
+
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-1.5 0 -1" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 30,000)"></a-text>
+
+            </a-plane>
+
+            <a-entity obj-model="obj: #bed-obj; mtl: #bed-mtl" position="1.67 -1 -3.5" rotation="0 90 0" scale="1 1 1">
+            </a-entity>
+            <a-asset-item id="bed-obj" src="img/3dmodels/bed/bed.obj"></a-asset-item>
+            <a-asset-item id="bed-mtl" src="img/3dmodels/bed/bed.mtl"></a-asset-item>
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="1.67 0 -3.5" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 40,000)"></a-text>
+
+            </a-plane>
+
+            <a-entity obj-model="obj: #chair-obj; mtl: #chair-mtl" position="2 -1 2" scale="1 1 1">
+
+            </a-entity>
+            <a-asset-item id="chair-obj" src="img/3dmodels/chair/chair.obj"></a-asset-item>
+            <a-asset-item id="chair-mtl" src="img/3dmodels/chair/chair.mtl"></a-asset-item>
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="2 0 2" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 800)"></a-text>
+
+            </a-plane>
+
+        </a-entity>
+
+        <!--  Room 2 (First Left) -->
+        <a-entity position="-10.5 1.5 7.5" rotation="0 90 0">
+            <!-- Room Sign -->
+            <!-- <a-image position="-1.45 1 6.02" rotation="0 90 0" src="#room-sign-1" height="1.5" width="3"></a-image> -->
+            <a-image position="1.45 1 6.02" rotation="0 -90 0" src="#room-sign-2" height="1.5" width="3"></a-image>
+            <!-- Back wall -->
+            <a-image position="-2 0 -4.4" cursor-listener src="#room2-final1" height="2.5" width="2.5" onmouseenter="myVr.playsong('./sound/chetak.mp3','#box1');" onmouseleave="myVr.stopSong('#box1')">
+                <a-plane visible="true" id="box1" onclick="myVr.buyAlbum('#box1')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-.09 -0.90 0.1" material="side:double " width="2" height=".5">
+                    <a-text color="white" align="center" value="Buy (INR 100)"></a-text>
+
+                </a-plane>
+            </a-image>
+
+
+            <a-image position="-2 2.4 -4.4" cursor-listener src="#room2-final2" height="2.5" width="2.5" onmouseenter="myVr.playsong('./sound/baapu.mp3','#box2');" onmouseleave="myVr.stopSong()">
+                <a-plane visible="true" id="box2" onclick="myVr.buyAlbum('#box2')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-.09 -1 0.1" material="side:double " width="2" height=".5">
+                    <a-text color="white" align="center" value="Buy (INR 150)"></a-text>
+
+                </a-plane>
+            </a-image>
+            <a-image position="2 0 -4.4" cursor-listener src="#gullyboy" height="2.5" width="2.5" onmouseenter="myVr.playsong('./sound/gully-boy.mp3','#box3');" onmouseleave="myVr.stopSong()">
+                <a-plane visible="true" id="box3" onclick="myVr.buyAlbum('#box3')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-0.08 -1 0.01" material="side:double " width="2" height=".5">
+                    <a-text color="white" align="center" value="Buy (INR 250)"></a-text>
+
+                </a-plane>
+            </a-image>
+            <a-image position="2 2.4 -4.4" cursor-listener src="#room2-final4" height="2.5" width="2.5" onmouseenter="myVr.playsong('./sound/ghugat.mp3','#box4');" onmouseleave="myVr.stopSong()">
+                <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-.09 -0.70 0.1" material="side:double " width="2" height=".5">
+                    <a-text color="white" align="center" value="Buy (INR 200)"></a-text>
+
+                </a-plane>
+            </a-image>
+            <a-image position="0 5.1 -4.2" cursor-listener rotation="15 0 0" src="#room2-final-sign" height="2.5" width="5">
+            </a-image>
+            <!--right wall -->
+            <a-entity rotation="0 -90 0">
+                <a-image position="-2 0 -4.4" cursor-listener src="#room2-mock1" height="2.5" width="2.5"></a-image>
+                <a-image position="-2 2.4 -4.4" cursor-listener src="#room2-mock2" height="2.5" width="2.5"></a-image>
+                <a-image position="2 0 -4.4" cursor-listener src="#room2-mock3" height="2.5" width="2.5"></a-image>
+                <a-image position="2 2.4 -4.4" cursor-listener src="#room2-mock4" height="2.5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" cursor-listener rotation="15 0 0" src="#room2-mock-sign" height="2.5" width="5">
+                </a-image>
+            </a-entity>
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="-2 0 -4.4" cursor-listener src="#room2-wire1" height="2.5" width="2.5"></a-image>
+                <a-image position="-2 2.4 -4.4" cursor-listener src="#room2-wire2" height="2.5" width="2.5"></a-image>
+
+                <a-image position="2 2.4 -4.4" cursor-listener src="#room2-wire4" height="2.5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" cursor-listener rotation="15 0 0" src="#room2-wire-sign" height="2.5" width="5">
+                </a-image>
+            </a-entity>
+        </a-entity>
+
+        <!-- Room 3 (First Right) -->
+        <a-entity position="7.5 1.5 7.5" rotation="0 -90 0">
+            <!-- Room Sign -->
+            <a-image position="-1.45 1 6.02" rotation="0 90 0" src="#room3-sign" height="1.5" width="3"></a-image>
+            <a-image position="1.45 1 6.02" rotation="0 -90 0" src="#room3-sign2" height="1.5" width="3"></a-image>
+            <!-- Back wall -->
+            <a-image position="-2.2 1.3 -4.4" src="#room3-s1" height="4" width="4"></a-image>
+            <a-image position="2.2 1.3 -4.4" src="#room3-s2" height="4" width="4"></a-image>
+
+            <!--right wall -->
+            <a-entity rotation="0 -90 0">
+                <a-image position="-2 1.3 -4.4" src="#room3-s3" height="4" width="4"></a-image>
+            </a-entity>
+
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="1 1.3 -4.4" src="#room3-s4" height="4" width="5"></a-image>
+            </a-entity>
+
+            <!-- electonics items -->
+
+            <a-entity obj-model="obj: #mobile-obj; mtl: #mobile-mtl" position="2.79 -1.23 2.54" rotation="0 30 0" scale=".01 .01 .01">
+                <a-animation attribute="rotation" dur="5000" fill="forwards" to="0 360 0" easing="linear" repeat="indefinite">
+                </a-animation>
+            </a-entity>
+            <a-asset-item id="mobile-obj" src="img/3dmodels/mobile/iphone.obj"></a-asset-item>
+            <a-asset-item id="mobile-mtl" src="img/3dmodels/mobile/iphone.mtl"></a-asset-item>
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="2.79 -1.23 2.54" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 1,10,000)"></a-text>
+
+            </a-plane>
+
+            <a-entity obj-model="obj: #speaker-obj; mtl: #speaker-mtl" position="-2.08 1.08 1.83" rotation="0 30 0" scale=".4 .4 .4">
+                <a-animation attribute="rotation" dur="8000" fill="backwards" to="0 360 0" easing="linear" repeat="indefinite">
+                </a-animation>
+            </a-entity>
+            <a-asset-item id="speaker-obj" src="img/3dmodels/speaker/speaker.obj"></a-asset-item>
+            <a-asset-item id="speaker-mtl" src="img/3dmodels/speaker/speaker.mtl"></a-asset-item>
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="-2.08 1.08 1.83" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 2,000)"></a-text>
+
+            </a-plane>
+
+        </a-entity>
+
+        <!-- Example Room 4 (Second Left) -->
+        <a-entity position="-10.5 1.5 -4.5" rotation="0 90 0">
+            <!-- Room Sign -->
+            <a-image position="-1.45 1 6.02" rotation="0 90 0" src="#room-sign-4" height="1.5" width="3"></a-image>
+            <a-image position="1.45 1 6.02" rotation="0 -90 0" src="#room-sign-4" height="1.5" width="3"></a-image>
+            <!-- Back wall -->
+            <a-image position="0 1.5 -4.4" src="#room4-map" height="7" width="7"></a-image>
+            <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room4-sign-roadshow" height="2.5" width="5"></a-image>
+            <!--right wall -->
+            <a-entity rotation="0 -90 0">
+                <a-image position="-2 0 -4.4" src="#room4-photo1" height="2.5" width="2.5"></a-image>
+                <a-image position="0 2.4 -4.4" src="#room4-photo2" height="2" width="2"></a-image>
+                <a-image position="2 0 -4.4" src="#room4-photo3" height="2.5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room4-sign-photos" height="2.5" width="5"></a-image>
+            </a-entity>
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="-2 0 -4.4" src="#room4-photo4" height="2.5" width="2.5"></a-image>
+                <a-image position="0 2.4 -4.4" src="#room4-photo5" height="2" width="2"></a-image>
+                <a-image position="2 0 -4.4" src="#room4-photo6" height="2.5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room4-sign-photos" height="2.5" width="5"></a-image>
+            </a-entity>
+        </a-entity>
+
+        <!-- Example Room 5 (Second Right) -->
+        <a-entity position="7.5 1.5 -4.5" rotation="0 -90 0">
+            <!-- Room Sign -->
+            <a-image position="-1.45 1 6.02" rotation="0 90 0" src="#room-sign-1" height="1.5" width="3"></a-image>
+            <!-- <a-image position="1.45 1 6.02" rotation="0 -90 0" src="#room-sign-2" height="1.5" width="3"></a-image> -->
+            <!-- Back wall -->
+            <a-image position="0 1.3 -4.4" src="#room5-landing" height="5" width="4"></a-image>
+            <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room5-sign-back" height="2.5" width="5"></a-image>
+            <!--right wall -->
+            <a-entity rotation="0 -90 0">
+                <a-image position="-2 1.3 -4.4" src="#room5-rust" height="5" width="2.5"></a-image>
+                <a-image position="2 1.3 -4.4" src="#room5-speech" height="5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room5-sign-side" height="2.5" width="5"></a-image>
+            </a-entity>
+            <!--left wall -->
+            <a-entity rotation="0 90 0">
+                <a-image position="-2 1.3 -4.4" src="#room5-vr" height="5" width="2.5"></a-image>
+                <a-image position="2 1.3 -4.4" src="#room5-wa" height="5" width="2.5"></a-image>
+                <a-image position="0 5.1 -4.2" rotation="15 0 0" src="#room5-sign-side2" height="2.5" width="5"></a-image>
+            </a-entity>
+            <a-entity obj-model="obj: #watch-obj; mtl: #watch-mtl" position="0 0.78 0.02" rotation="0 0 0" scale="1 1 1">
+                <a-animation attribute="rotation" dur="5000" fill="forwards" to="0 360 0" easing="linear" repeat="indefinite">
+                </a-animation>
+            </a-entity>
+            <a-asset-item id="watch-obj" src="img/3dmodels/watch/watch.obj"></a-asset-item>
+            <a-asset-item id="watch-mtl" src="img/3dmodels/watch/watch.mtl"></a-asset-item>
+            <a-plane visible="true" id="box4" onclick="myVr.buyAlbum('#box4')" class="buy-panel" color="#ecefd5" rotation="0 0 0" position="0 0.78 0.02" material="side:double " width="2" height=".5">
+                <a-text color="white" align="center" value="Buy (INR 4,000)"></a-text>
+
+            </a-plane>
+        </a-entity>
+
+
+        <!-- Example Room 6 (far back room ) -->
+        <a-entity position="-1.5 1.5 -22.5">
+            <!-- Room Sign -->
+            <a-image position="-1.45 1 7.02" rotation="0 90 0" src="#theatre-sign" height="2" width="4"></a-image>
+            <a-image position="1.45 1 7.02" rotation="0 -90 0" src="#movie-poster" height="2" width="4"></a-image>
+            <!-- Back wall -->
+            <a-video src="#theaterVideo" width="7" height="5.25" position="0 1.4 -4.4"></a-video>
+            <a-image position="0 0 -4.4" src="#theater-curtains" height="12" width="9"></a-image>
+            <!-- objects -->
+            <a-entity obj-model="obj: #couch-obj; mtl: #couch-mtl" position="0 -1 1" rotation="0 0 0" scale="2 2 2">
+            </a-entity>
+            <!-- ceiling -->
+            <a-plane position="0 6 0" rotation="90 0 0" height="9" width="9" color="black"></a-plane>
+        </a-entity>
+
+
+
+
+
+        <!-- Ground -->
+        <a-grid id="ground" static-body material="src: #floor; repeat: 15 15" rotation="-90 0 0"></a-grid>
+
+        <!-- Walls (used by map.js) -->
+        <a-entity id="walls"></a-entity>
+
+
+        <!-- Sky -->
+        <a-sky id="sky" color="#fff"></a-sky>
+
+    </a-scene>
+
+    <!-- scripts for creating rooms-->
+    <script src="js/map.js"></script>
+    <script src="js/video.js"></script>
+
+    <!-- pwa stuff-->
+    <script>
+        if ('serviceWorker' in navigator) {
+            console.log("Will the service worker register?");
+            navigator.serviceWorker.register('service-worker.js')
+                .then(function(reg) {
+                    console.log("Yes, it did.");
+                }).catch(function(err) {
+                    console.log("No it didn't. This happened:", err)
+                });
+        }
+    </script>
+</body>
+<!-- Various 3D models and poster have been used from various resources. We dont hold any copyright on them. -->
+
+</html>
