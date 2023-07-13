@@ -1,0 +1,142 @@
+body {
+    background-image: url('https://idsb.tmgrup.com.tr/ly/uploads/images/2022/02/04/180030.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* **************************************Navbar**************************************************** */
+
+.nav-item {
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+}
+
+.nav-link {
+    color: #53f8fe;
+   
+}
+
+.navbar-brand {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 900;
+    color: #53f8fe;
+    font-size: 40px;
+}
+
+
+/********************************************* Text on Homepage *****************************************/
+.container {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.container-index {
+    position: relative;
+    color: white;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.card-body {
+    width: 70%;
+    height: 450px;
+    background-color: black;
+    color: white;
+    margin-top: 10%;
+    margin-left: 8%;
+    margin-bottom: 10%;
+    border-radius: 40px;
+}
+
+#p-text {
+    font-size: 30px;
+    margin-top: 2.5rem;
+    text-align: center;
+    color: rgb(255, 0, 136);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+#instruct {
+    margin-left: 20px;
+}
+
+#li-text {
+    font-size: 1.3em;
+}
+
+
+/* Button */
+.btn {
+    margin-top: 30px;
+    margin-left: 180px;
+    align-items: center;
+    text-align: center;
+    background-color: cyan;
+    color: black;
+}
+
+/*********************************************About page*************************************/
+.card-body-about {
+    width: 800px;
+    height: 400px;
+    background-color: black;
+    color: lightskyblue;
+    margin-top: 15%;
+    margin-left: 20%;
+    border-radius: 40px;
+    margin-bottom: 100px;
+}
+
+.h1-about {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding-top: 60px;
+    color: #FE53BB;
+}
+.h2-about{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #FE53BB;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.p-text-about {
+    padding: 3em;
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+/******************************************************** Contact Page *************************************************/
+
+#p-text-contact {
+  
+    background-color: black;
+    color: white;
+    width: 700px;
+    height: 550px;
+    text-align: left;
+    padding: 3em;
+    border-radius: 40px;
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top: 100px;
+    padding-left:14%;
+}
+.heading{
+    color: rgb(255, 0, 136);
+    font-size: 30px;
+}
+
+.a-contact {
+    color: blue;
+}
